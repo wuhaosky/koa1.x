@@ -1,0 +1,28 @@
+language: node_js
+node_js:
+  - stable
+  - 7
+  - 6
+  - 5
+  - 4
+  - 3
+  - 2
+  - 1
+  - 0.12
+matrix:
+  include:
+    - node_js: "8.0"
+      env: "NVM_NODEJS_ORG_MIRROR=https://nodejs.org/download/nightly"
+  allow_failures:
+    # Allow the nightly installs to fail
+    - env: "NVM_NODEJS_ORG_MIRROR=https://nodejs.org/download/nightly"
+before_script:
+  - sudo apt-get install build-essential libssl-dev git
+  - git clone https://github.com/wg/wrk.git
+  - cd wrk && make && sudo cp wrk /usr/local/bin && cd ..
+script:
+  - make test-travis
+  - make bench
+after_script:
+  - npm install codecov
+  - ./node_modules/.bin/codecov
